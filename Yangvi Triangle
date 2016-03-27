@@ -1,0 +1,33 @@
+#include <iostream>
+#include <queue>
+using namespace std;
+
+int main()
+{
+    queue <int> yvq;
+    int i = 1, j; //cycle
+    int n; //total row
+    cout << "Enter the number of rows: ";
+    cin >> n;
+    yvq.push(0);
+    yvq.push(1); cout << " " << yvq.back() << " ";
+    yvq.push(1); cout << " " << yvq.back() << " ";
+    yvq.push(0);
+    for (i = 0; i < n; i++)
+    {
+        cout << endl;
+        //yvq.push(0);
+        for (j = 0; j < i+3; j++)
+        {
+            int k, m;
+            k = yvq.front();
+            yvq.pop();
+            m = yvq.front();
+            //yvq.pop();
+            yvq.push(k+m);
+            cout << " " << yvq.back() << " ";
+        }
+        yvq.push(0);
+    }
+    return 0;
+}
