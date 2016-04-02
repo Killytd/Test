@@ -1,0 +1,142 @@
+#include <iostream>
+#include <stdlib.h>
+const int defaultSize = 100;
+template <class T>
+class Seqlist <T>
+{
+protected:
+    T *data; //save array;
+    int maxSize; //Max size;
+    int last; //current last item;(start from 0)
+    void reSize(int newSize);
+public:
+    SeqList(int sz = defaultSize);
+    SeqList(Seqlist<T> &L);
+    ~Seqlist(){delete []data;}
+    int Size()const{return maxSize;}//return the maximum numbers of items that can be store
+    int Length()const{return last+1}//return the length of the list;
+    int Search(T &x)const;//search where x is(return the serial number)
+    //int Locate(int i)const;//Locate where No.i is
+    bool getData(int i, T &x)const//get No.i
+        {if (i > 0 && i <= last+1) {x = data[i - 1]; return true;}else return false;}
+    void setData(int i, T &x)//change i with x
+        {if (i > 0 && i <= last+1) data[i-1] = x;}
+    bool Insert(int i, T &x);//insert x behind No.i
+    bool Remove(int i, T &x);//delete No.i and return its data by x
+    bool IsEmpty(){return (last == -1)? true: false;}
+    bool IsFull(){return (last == maxSize - 1)? true: false;}
+    void Input();
+    void Output();
+    Seqlist<T> operator = (Seqlist<T> &L);
+};
+
+template <class T>
+Seqlist<T>::Seqlist(int sz)
+{
+    if (sz > 0)
+    {
+        maxSize = sz;//sz is the size of the array
+        last = -1;
+        data = new T[maxSize];
+    }
+    else
+        printf("Size can't be negative!");
+}
+
+template <class T>
+Seqlist<T>::Seqlist(Seqlist<T> &L)
+{
+    maxSize = L.Size();
+    Last = L.Length()-1;
+    T value;
+    data = new T[maxSize];
+    for (int i = 1; i <= last+1; i++)
+    {
+        L.getData(i, value);
+        data[i-1] = value;
+    }
+}
+
+template <class T>
+void Seqlist<T>::reSize(int newSize)
+{
+    if (newSize <= 0)
+    {
+        cerr << "Wrong" << endl;
+        exit(1);
+    }
+    if (newSize != maxSize)
+    {
+        T *newarray = new T[newSize];
+        int n = last+1;
+        T *srcptr = data;
+        T *destptr = newarray;
+        while (n--)
+        {
+            *destptr++ = *srcptr++;
+        }
+        delete []data;
+        data = newarray;
+        maxSize = newSize;
+    }
+}
+
+template <class T>
+int Seqlist<T>::Search(T &x)
+{
+    for (int i = 0; i <= last; i++)//last+1
+        if(data[i] == x) return i+1;
+    return 0;
+}
+
+template <class T>
+bool Seqlist<T>::Insert(int i, T &x)//i start from 0
+{
+    if (last == maxSize-1 || i < 0 || i > last+1)
+        return false;
+    for (int j = last; j >= i; j--)
+        data[j+1] = data[j];
+    data[i] = x;
+    return true;
+}
+
+template <class T>
+bool Seqlist<T>::Remove(int i, T &x)// i start from 1
+{
+    if (last == -1 || i < 1 || i > last+1)
+        return false;
+    x = data[i-1];
+    for (int j = i; j <= last; j++)
+        data[j-1] = data[j];
+    last--;
+    return true;
+}
+
+template <class T>
+void Seqlist<T>::Input()
+{
+    while(1)
+    {
+        cin >> last;
+        if (last <= maxSize-1) break;
+        cout << "The amount of items can't be out of the range of " << maxSize - 1 << endl;
+    }
+    for (int i = 0; i <= last; i++)
+    {
+        cout << "[" << i << "]:";
+        cin >> data[i];
+        cout << endl;
+    }
+}
+
+template <class T>
+void Seqlist<T>::Output()
+{
+    cout << "the location of the last item is: " << last << "(start from 0);\n";
+    for (int i = 0; i <= last; i++)
+        cout << "#" << i+1 << ":" << data[i] << endl;
+}
+
+
+//template <class T>
+//Seqlist<T> Seqlist<T>::operator = (Seqlist<T> &L)
