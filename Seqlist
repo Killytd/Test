@@ -1,8 +1,9 @@
 #include <iostream>
 #include <stdlib.h>
+using namespace std;
 const int defaultSize = 100;
 template <class T>
-class Seqlist <T>
+class Seqlist
 {
 protected:
     T *data; //save array;
@@ -10,11 +11,11 @@ protected:
     int last; //current last item;(start from 0)
     void reSize(int newSize);
 public:
-    SeqList(int sz = defaultSize);
-    SeqList(Seqlist<T> &L);
+    Seqlist(int maxSize = defaultSize);
+    Seqlist(Seqlist<T> &L);
     ~Seqlist(){delete []data;}
     int Size()const{return maxSize;}//return the maximum numbers of items that can be store
-    int Length()const{return last+1}//return the length of the list;
+    int Length()const{return last+1;}//return the length of the list;
     int Search(T &x)const;//search where x is(return the serial number)
     //int Locate(int i)const;//Locate where No.i is
     bool getData(int i, T &x)const//get No.i
@@ -40,14 +41,14 @@ Seqlist<T>::Seqlist(int sz)
         data = new T[maxSize];
     }
     else
-        printf("Size can't be negative!");
+        cout <<"Size can't be negative!";
 }
 
 template <class T>
 Seqlist<T>::Seqlist(Seqlist<T> &L)
 {
     maxSize = L.Size();
-    Last = L.Length()-1;
+    last = L.Length()-1;
     T value;
     data = new T[maxSize];
     for (int i = 1; i <= last+1; i++)
@@ -82,7 +83,7 @@ void Seqlist<T>::reSize(int newSize)
 }
 
 template <class T>
-int Seqlist<T>::Search(T &x)
+int Seqlist<T>::Search(T &x)const
 {
     for (int i = 0; i <= last; i++)//last+1
         if(data[i] == x) return i+1;
@@ -140,3 +141,4 @@ void Seqlist<T>::Output()
 
 //template <class T>
 //Seqlist<T> Seqlist<T>::operator = (Seqlist<T> &L)
+
