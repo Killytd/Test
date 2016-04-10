@@ -1,0 +1,69 @@
+#include <iostream>
+#include <stdlib.h>
+using namespace std;
+
+struct Link
+{
+    Link *pre;
+    int data;
+};
+
+class LinkStack
+{
+private:
+    Link *top;
+    int num;
+public:
+    LinkStack(Link *p = NULL, int n = 0):top(p), num(n){};
+    void push(int x);
+    void pop();
+    int getTop()const;
+    int getSize()const;
+};
+
+void LinkStack::push(int x)
+{
+    if (top != NULL)
+    {
+        Link *pNew = new Link;
+        pNew->pre = top;
+        pNew->data = x;
+        top = pNew;
+        num++;
+    }
+    if (top == NULL)
+    {
+        Link *pNew = new Link;
+        pNew->data = x;
+        pNew->pre = NULL;
+        top = pNew;
+        num++;
+    }
+}
+
+void LinkStack::pop()
+{
+    if (top == NULL)
+    {
+        cout << "No element";
+    }
+    else
+    {
+        Link *del = new Link;
+        del = top;
+        top = top->pre;
+        delete del;
+        num--;
+    }
+}
+
+
+int LinkStack::getTop()const
+{
+    return top->data;
+}
+
+int LinkStack::getSize()const
+{
+    return num;
+}
