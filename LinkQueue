@@ -1,0 +1,69 @@
+#include <iostream>
+#include <stdlib.h>
+using namespace std;
+
+struct Link
+{
+    Link *next;
+    int data;
+};
+
+class LinkQueue
+{
+private:
+    Link *Front;
+    Link *Rear;
+    int Size;
+public:
+    LinkQueue (Link *pH = NULL, Link *pB = NULL, int sz = 0): Front(pH), Rear(pB), Size(sz) {};
+    void enqueue(int x);
+    void dequeue();
+    int getFront()const;
+    int getSize()const;
+};
+
+void LinkQueue::enqueue(int x)
+{
+    if (Front != NULL)
+    {
+        Link *pNew = new Link;
+        pNew->data = x;
+        pNew->next = NULL;
+        Rear->next = pNew;
+        Rear = pNew;
+        Size++;
+    }
+    if (Front == NULL)
+    {
+        Front = Rear = new Link;
+        Front->data = x;
+        Front->next = NULL;
+        Size++;
+    }
+}
+
+void LinkQueue::dequeue()
+{
+    if (Front == NULL)
+    {
+        cout << "No element" << endl;
+    }
+    if (Front != NULL)
+    {
+        Link *del = new Link;
+        del = Front;
+        Front = Front->next;
+        delete del;
+        Size--;
+    }
+}
+
+int LinkQueue::getFront()const
+{
+    return Front->data;
+}
+
+int LinkQueue::getSize()const
+{
+    return Size;
+}
