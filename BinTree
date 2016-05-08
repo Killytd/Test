@@ -1,0 +1,117 @@
+#include <iostream>
+using namespace std;
+
+struct BTN
+{
+    int data;
+    BTN *leftChild, *rightChild;
+    BTN(): leftChild(NULL), rightChild(NULL) {}
+    BTN(int x, BTN *l = NULL, BTN *r = NULL): data(x), leftChild(l), rightChild(r) {}
+};
+
+class BinTree
+{
+private:
+    //BTN *root;
+    //int RefValue//数据停止输入标记
+    //bool Insert(BTN *&subTree, const int &x)//插入
+    void Destroy(BTN *subTree);//删除
+    bool Find(BTN *subTree, const int &x)const;//查找
+    int Height(BTN *subTree)const;//返回树高度
+    int Size(BTN *subTree)const;//返回节点数
+public:
+    BTN *root;
+    int RefValue;//数据停止输入标记
+    BinTree(): root(NULL) {}
+    BinTree(int value): RefValue(value), root(NULL) {}
+    ~BinTree() {Destroy(root);}
+    void CreateBinTree(BTN *subTree);
+    bool IsEmpty();
+    BTN *Parent(BTN *subTree, BTN *current);//从subtree开始寻找current的父节点
+    void Traverse(BTN *subTree);//前序遍历打印
+    void preOrder(BTN *subTree);//前序遍历
+    void inOrder(BTN *subTree);//中序遍历
+    void postOrder(BTN *subTree);//后序遍历
+};
+
+void BinTree::preOrder(BTN *subTree)
+{
+    if (subTree != NULL)
+    {
+        cout << subTree->data << " ";
+        preOrder(subTree->leftChild);
+        preOrder(subTree->rightChild);
+    }
+}
+
+void BinTree::inOrder(BTN *subTree)
+{
+    if (subTree != NULL)
+    {
+        inOrder(subTree->leftChild);
+        cout << subTree->data << " ";
+        inOrder(subTree->rightChild);
+    }
+}
+
+void BinTree::postOrder(BTN *subTree)
+{
+    if (subTree != NULL)
+    {
+        postOrder(subTree->leftChild);
+        postOrder(subTree->rightChild);
+        cout << subTree->data;
+    }
+}
+
+void BinTree::CreateBinTree(BTN *subTree)
+{
+    int a;
+    cin >> a;
+    if (a != RefValue)
+    {
+        subTree = new BTN(a);
+        CreateBinTree(subTree->leftChild);
+        CreateBinTree(subTree->rightChild);
+    }
+}
+
+void BinTree::Destroy(BTN *subTree)
+{
+    if (subTree != NULL)
+    {
+        Destroy(subTree->leftChild);
+        Destroy(subTree->rightChild);
+        delete subTree;
+    }
+}
+
+BTN *BinTree::Parent(BTN *subTree, BTN *current)
+{
+    if (subTree == NULL)
+    {
+        return NULL;
+    }
+    if (subTree->leftChild == current || subTree->rightChild == current)
+    {
+        return subTree;
+    }
+    BTN *temp;
+    if ((temp = Parent(subTree->leftChild, current)) != NULL)
+    {
+        return temp;
+    }
+    else
+    {
+        return Parent(subTree->rightChild, current);
+    }
+}
+
+int main()
+{
+    BinTree td;
+    cin >> td.RefValue;
+    td.CreateBinTree(td.root);
+    cout << td.root->data;
+    td.preOrder(td.root);
+}
