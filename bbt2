@@ -1,0 +1,276 @@
+#include <iostream>
+#include <stdio.h>
+using namespace std;
+
+typedef struct BiTNode//二叉树节点
+{
+    char data;
+    struct BiTNode *lchild,*rchild;
+}BiTNode,*BiTree;
+
+class BinTree
+{
+private:
+    void Destroy(BiTNode *subTree);//删除
+    int Max(int a, int b);//判断两者之中最大
+public:
+    BiTNode *root;//树的根节点
+    BinTree(): root(NULL) {}//构造函数
+    ~BinTree() {Destroy(root);}//析构函数
+	int Height(BiTNode *subTree);//返回树高度
+    BiTNode* Create();//层次序建立二叉树
+    void InOrder(BiTNode *subTree);//中序遍历
+    void LevelOrder(BiTNode *subTree);//层次序遍历
+    int Insert(BiTNode *subTree);//插入到subTree的下一个节点，先输入0作为左子树，1作为右子树；再输入0将原左子树作为插入节点的左子树，1作为右子树
+    int Delete(BiTNode *subTree);//删除subTree这个节点，将被删除的节点的左子树代替被删除的节点，右子树作为左子树的子女节点
+    BiTNode *Parent(BiTNode *subTree, BiTNode *current);//从subTree开始寻找current的父节点
+};
+
+//函数功能：删除subTree这个节点，
+//			将被删除的节点的左子树代替被删除的节点，右子树作为左子树的子女节点。
+int BinTree::Delete(BiTNode *subTree)//将被删除节点的左子树代替被删除节点，右子树作为被删除节点的左子树的右子树
+{
+	cout << "将被删除节点的左子树代替被删除节点，右子树作为被删除节点的左子树的右子树。\n";
+	if (subTree == root)//当被删除的节点为根节点时
+	{
+		root = root->lchild;//将原根节点的左子树作为根节点
+	}
+	BiTNode *prnt = new BiTNode;//prnt为被删除节点的父节点
+	prnt = Parent(root, subTree);
+	if (prnt->lchild = subTree)
+	{
+		prnt->lchild = subTree->lchild;//将被删除节点的左子树作为被删除节点的父节点的左子树
+	}
+	else
+	{
+		prnt->rchild = subTree->lchild;//将被删除节点的左子树作为被删除节点的父节点的右子树
+	}
+	BiTNode *preRchild = new BiTNode;//preRchild为被删除节点的右子树
+	preRchild = subTree->rchild;
+	BiTNode *rpt = new BiTNode;//被删除节点的左子树的右子树
+	rpt = subTree->lchild->rchild;
+	BiTNode *preLchild = new BiTNode;//被删除节点的左子树
+	preLchild = subTree->lchild;
+	delete subTree;//删除该节点
+	if (rpt == NULL)//当被删除节点的左子树的右子树为空，直接插入
+	{
+		preLchild->rchild = preRchild;
+		return 0;
+	}
+	while (rpt->rchild != NULL && rpt->lchild != NULL)//但被删除节点的左子树的右子树不空，在右子树中找为空的节点
+	{
+		rpt = rpt->rchild;
+	}
+	if (rpt->rchild == NULL)//右子树为空
+	{
+		rpt->rchild = new BiTNode;
+		rpt->rchild = preRchild;
+		return 0;
+	}
+	if (rpt->lchild == NULL)//左子树为空
+	{
+		rpt->lchild = new BiTNode;
+		rpt->lchild = preRchild;
+		return 0;
+	}
+}
+
+BiTNode *BinTree::Parent(BiTNode *subTree, BiTNode *current)//寻找current节点的父节点
+{
+    if (current == root)//current节点为根节点
+    {
+        cout << "该节点为根节点\n";
+        return NULL;
+    }
+    if (subTree == NULL)//subTree为空
+    {
+        return NULL;
+    }
+    if (subTree->lchild == current || subTree->rchild == current)//找到父节点
+    {
+        return subTree;
+    }
+    BiTNode *p = new BiTNode;
+    if ((p = Parent(subTree->lchild, current)) != NULL)//在左子树中搜索
+    {
+        return p;
+    }
+    else//在右子树中搜索
+    {
+        return Parent(subTree->rchild, current);
+    }
+
+}
+
+
+//函数功能：插入到subTree的下一个节点，先输入0作为左子树，1作为右子树；
+//			再输入0将原左子树作为插入节点的左子树，1作为右子树。
+int BinTree::Insert(BiTNode *subTree)//n为0插入subTree的左子树，j为0将原来subTree的所选子树接入插入节点的左子树,j为1右子树
+{
+	cout << "要插入节点作为其父节点的子女节点。\n";
+	int n = 0, j = 0;
+	cout << "输入0将要插入的节点作为其父节点的左子树。\n";
+	cout << "输入1将药插入的节点作为其父节点的右子树。\n";
+	cin >> n;
+	cout << "输入0将被插入的节点的原子树作为要插入节点的左子树。\n";
+	cout << "输入1将被插入的节点的原子树作为要插入节点的右子树。\n";
+	cin >> j;
+    if (n != 0 && n != 1 && j != 0 && j != 1)
+    {
+    	cout << "输入节点错误";
+        return 1;
+    }
+    BiTNode *inst = new BiTNode;
+    cout << "请输入被插入节点的数据：";
+    cin >> inst->data;
+    inst->lchild = NULL;
+    inst->rchild = NULL;
+    if (n == 0)//将inst插入subTree的左子树
+    {
+        if (subTree->lchild != NULL)//subTree左子树不空
+        {
+            if (j == 0)//将原来subTree的左子树插入inst的左子树，inst的右子树为空
+			{
+				inst->lchild = subTree->lchild;
+				inst->rchild = NULL;
+			}
+			if (j == 1)//将原来subTree的左子树插入inst的右子树，inst的左子树为空
+			{
+				inst->rchild = subTree->lchild;
+				inst->lchild = NULL;
+			}
+        }
+        subTree->lchild = inst;
+    }
+    if (n == 1)//将inst插入subTree的右子树
+	{
+		if (subTree->rchild != NULL)//subTree的右子树不空
+		{
+			if (j == 0)//将原来subTree的右子树插入inst的左子树，inst的右子树为空
+			{
+				inst->lchild = subTree->rchild;
+				inst->rchild = NULL;
+			}
+			if (j == 1)//将原来subTree的右子树插入inst的左子树，inst的左子树为空
+			{
+				inst->rchild = subTree->rchild;
+				inst->lchild = NULL;
+			}
+		}
+		subTree->rchild = inst;
+	}
+	return 0;
+}
+
+void BinTree::InOrder(BiTNode *subTree)//先序遍历
+{
+    if (subTree != NULL)
+    {
+        InOrder(subTree->lchild);
+        cout << subTree->data << " ";
+        InOrder(subTree->rchild);
+    }
+}
+
+void BinTree::LevelOrder(BiTNode *subTree)//层次序遍历
+{
+	BiTNode *Queue[100];//Queue为遍历队列
+	int Front, Rear;//Front为队首，Rear为队尾
+	Front = 0, Rear = 0;//队列初始
+	Queue[0] = root;//队首为根节点
+	Rear++;//队尾+1
+	while (Front != Rear)//队列不空时
+	{
+		cout << Queue[Front]->data << " ";//输出队首元素
+		if (Queue[Front]->lchild != NULL)//队首的左子树不空
+		{
+			Queue[Rear] = Queue[Front]->lchild;//将左子树进队
+			Rear++;//队尾+1
+		}
+		if (Queue[Front]->rchild != NULL)//队首的右子树不空
+		{
+			Queue[Rear] = Queue[Front]->rchild;//将右子树进队
+			Rear++;//队尾+1
+		}
+		Front++;//队首向后推一个
+	}
+}
+
+void BinTree::Destroy(BiTNode *subTree)//遍历删除树
+{
+    if (subTree != NULL)
+    {
+        Destroy(subTree->lchild);
+        Destroy(subTree->rchild);
+        delete subTree;
+    }
+}
+
+int BinTree::Height(BiTNode *T)//求树的高度
+{
+	if (T == NULL)//该节点为空返回0
+	{
+		return 0;
+	}
+	else//返回左子树和右子树中较大的一个
+	{
+		return 1 + Max(Height(T->lchild), Height(T->rchild));
+	}
+}
+
+int BinTree::Max(int a, int b)//比较a与b的最大值
+{
+	if (a >= b)
+	{
+		return a;
+	}
+	else
+	{
+		return b;
+	}
+}
+
+BiTNode* BinTree::Create()//按层次序建立二叉树
+{
+	char ch;
+	BiTNode *Queue[100];//Queue为输入队列
+	int Front, Rear;//Front表示队首，Rear表示队尾
+	BiTNode *cur;
+	root = NULL;
+	Front = 1, Rear = 0;//队列初始
+	cout << "层次序输入建立二叉树\n";
+	cout << "将二叉树由根节点到叶节点，由左到右编号" << endl << "(其中#是结束符，*代表节点不存在)" << endl;
+	while((ch = getchar()) != '#')//当输入未终止时
+	{
+		cur=NULL;//先令当前结点为空
+		if(ch != '*')//当结点存在时将数据输入新建立的结点
+		{
+			cur = new BiTNode;
+			cur->data = ch;
+			cur->lchild = NULL;
+			cur->rchild = NULL;
+		}
+		Rear++;//对尾+1
+		Queue[Rear] = cur;//将当前结点存入队列
+		if(Rear == 1)//当前树为空时讲当前结点作为根节点
+		{
+			root = cur;
+		}
+		else//当前树不空，将当前结点接入树
+		{
+			if(cur != NULL && Queue[Front] != NULL)//当前结点不空且队列不空
+			{
+				if(Rear % 2 == 1)//当前结点为右子树
+				{
+					Queue[Front]->rchild = cur;
+					Front++;//队首+1
+				}
+				else//当前结点为左子树
+				{
+					Queue[Front]->lchild = cur;
+				}
+			}
+		}
+	}
+	return root;//返回根节点
+}
