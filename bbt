@@ -1,0 +1,169 @@
+#include <iostream>
+#include <stdio.h>
+using namespace std;
+
+typedef struct BiTNode
+{
+    char data;
+    struct BiTNode *lchild,*rchild;
+}BiTNode,*BiTree;
+
+class BinTree
+{
+private:
+    void Destroy(BiTNode *subTree);//删除
+    int Max(int a, int b);//判断两者之中最大
+public:
+    BiTNode *root;//树的根节点
+    BinTree(): root(NULL) {}
+    ~BinTree() {Destroy(root);}
+	int Height(BiTNode *subTree);//返回树高度
+    BiTNode* Create();//层次序建立二叉树
+    void InOrder(BiTNode *subTree);
+    //void preOrder(BiTNode *subTree);//前序遍历
+    int Insert(BiTNode *subTree, int n, int j);//插入subTree下一个节点
+    BiTNode *Parent(BiTNode *subTree, BiTNode *current);
+};
+
+BiTNode *BinTree::Parent(BiTNode *subTree, BiTNode *current)
+{
+    if (current == root)
+    {
+        cout << "该节点为根节点\n";
+        return NULL;
+    }
+    if (subTree == NULL)
+    {
+        return NULL;
+    }
+    if (subTree->lchild == current || subTree->rchild == current)
+    {
+        return subTree;
+    }
+    BiTNode *p;
+    if ((p = Parent(subTree->lchild, current)) != NULL)
+    {
+        return p;
+    }
+    else
+    {
+        return Parent(subTree->rchild, current);
+    }
+
+}
+
+int BinTree::Insert(BiTNode *subTree, int n, int j)//n为0插入subTree的左子树，j为0将原来subTree的所选子树接入插入节点的左子树
+{
+    if (n != 0 && n != 1 && j != 0 && j != 1)
+    {
+        return 1;
+    }
+    BiTNode *inst;
+    if (n == 0)
+    {
+        if (subTree->lchild != NULL)
+        {
+            
+        }
+    }
+}
+
+void BinTree::InOrder(BiTNode *subTree)//先序遍历
+{
+    if (subTree != NULL)
+    {
+        InOrder(subTree->lchild);
+        cout << subTree->data << " ";
+        InOrder(subTree->rchild);
+    }
+}
+
+void BinTree::Destroy(BiTNode *subTree)//遍历删除树
+{
+    if (subTree != NULL)
+    {
+        Destroy(subTree->lchild);
+        Destroy(subTree->rchild);
+        delete subTree;
+    }
+}
+
+int BinTree::Height(BiTNode *T)
+{
+	if (T == NULL)//该节点为空返回0
+	{
+		return 0;
+	}
+	else//返回左子树和右子树中较大的一个
+	{
+		return 1 + Max(Height(T->lchild), Height(T->rchild));
+	}
+}
+
+int BinTree::Max(int a, int b)//比较a与b的最大值
+{
+	if (a >= b)
+	{
+		return a;
+	}
+	else
+	{
+		return b;
+	}
+}
+
+BiTNode* BinTree::Create()
+{
+	char ch;
+	BiTNode *Queue[100];//Queue为输入队列
+	int Front,Rear;//Front表示队首，Rear表示队尾
+	//BiTNode *root, *cur;//root为根节点，s为当前输入结点
+	BiTNode *cur;
+	root = NULL;
+	Front=1, Rear=0;//队列初始
+	cout << "将二叉树由根节点到叶节点，由左到右编号" << endl << "(其中#是结束符，*代表节点不存在)" << endl;
+	while((ch=getchar())!='#')//当输入未终止时
+	{
+		cur=NULL;//先令当前结点为空
+		if(ch != '*')//当结点存在时将数据输入新建立的结点
+		{
+			cur = new BiTNode;
+			cur->data = ch;
+			cur->lchild = NULL;
+			cur->rchild = NULL;
+		}
+		Rear++;//对尾+1
+		Queue[Rear]= cur;//将当前结点存入队列
+		if(Rear == 1)//当前树为空时讲当前结点作为根节点
+		{
+			root = cur;
+		}
+		else//当前树不空，将当前结点接入树
+		{
+			if(cur != NULL && Queue[Front] != NULL)//当前结点不空且队列不空
+			{
+				if(Rear % 2 == 1)//当前结点为右子树
+				{
+					Queue[Front]->rchild = cur;
+					Front++;//队首+1
+				}
+				else//当前结点为左子树
+				{
+					Queue[Front]->lchild= cur;
+				}
+			}
+		}
+	}
+	return root;//返回根节点
+}
+
+int main()
+{
+    BinTree td;
+    td.Create();
+    td.InOrder(td.root);
+    cout << endl;
+    BiTNode *ot = td.root->lchild->lchild;
+    BiTNode *pt = td.Parent(td.root, ot);
+    td.InOrder(pt);
+}
