@@ -1,0 +1,79 @@
+#include <iostream>
+using namespace std;
+
+typedef struct HuffmanNode//二叉树节点
+{
+    char data;
+    int weight;
+    struct HuffmanNode *lchild,*rchild;
+}HuffmanNode;
+
+class HuffmanTree
+{
+private:
+    void Destroy(HuffmanNode *subTree);//删除
+public:
+    BiTNode *root;
+    HuffmanTree(HuffmanNode *root);
+    ~HuffmanTree() {Destroy(HuffmanNode *root);}
+    void Delete(HuffmanNode *subTree);
+    HuffmanNode *Merge(HuffmanNode *Tree_1, HuffmanNode *Tree_2);
+    void Build(HuffmanNode *w, int n);
+    int FindDiff(int ary[], int dif[], int w[],int n);
+};
+
+HuffmanNode *HuffmanTree::Merge(HuffmanNode *Tree_1, HuffmanNode *Tree_2)
+{
+    HuffmanNode *NewTree = new HuffmanNode;
+    NewTree->weight = Tree_1->weight + Tree_2->weight;
+    NewTree->lchild = Tree_1->lchild;
+    NewTree->rchild = Tree_2->rchild;
+}
+
+int FindDiff(int ary[], int dif[], int w[],int n)//找到不同的元素，返回不同的元素个数
+{
+    int difnum = 0;//dif长度
+    int i, j, sig = 0;
+    int temp;
+    for (i = 0; i < n; i++)
+    {
+        temp = ary[i];
+        for (j = 0; j < difnum; j++)
+        {
+            if (dif[j] == temp)//dif中已存
+            {
+                sig = 1;
+                break;
+            }
+        }
+        //cout << sig << " ";
+        if (sig == 0)//dif中未存
+        {
+            dif[difnum] = temp;
+        //    cout << dif[difnum]<< " "<<difnum << endl;
+            difnum++;
+        }
+        if (sig == 1)
+        {
+            sig = 0;
+            continue;
+        }
+    }
+    for (i = 0; i < difnum; i++)
+    {
+        w[i] = 0;
+        for (j = 0; j < n; j++)
+        {
+            if (dif[i] == ary[j])
+            {
+                w[i]++;
+            }
+        }
+    }
+    return difnum;
+}
+
+void HuffmanTree::Build(int dif[], int w[], int difnum)//n为数组长度
+{
+    
+}
