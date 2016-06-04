@@ -1,0 +1,160 @@
+#include <iostream>
+#include <stdlib.h>
+using namespace std;
+int DefaultSize = 10;
+struct Node
+{
+    int key;
+    int data;
+};
+
+class MinHeap
+{
+//private:
+    //Node *heap;//数组表示
+public:
+    int CurSize;//当前元素个数
+    int MaxSize;//最大元素个数
+//public:
+    Node *heap;
+    MinHeap(int Size = DefaultSize);
+    int Insert(int key, int data);
+    int SiftUp(int start);
+    int SiftDown();
+    int RemoveMin();
+};
+
+int MinHeap::RemoveMin()
+{
+    if(CurSize == 0)
+    {
+        cout << "堆空\n";
+        return 1;
+    }
+    heap[0] = heap[CurSize-1];
+    CurSize--;
+    SiftDown();
+    return 0;
+}
+
+int MinHeap::SiftDown()
+{
+    int i = 0, j = 1;
+    Node temp;
+    if (CurSize == 0)
+    {
+        return 0;
+    }
+    if (CurSize == 1)
+    {
+        if (heap[0].key > heap[1].key)
+        {
+            temp = heap[0];
+            heap[0] = heap[1];
+            heap[1] = temp;
+        }
+        return 0;
+    }
+    if (CurSize == 2)
+    {
+        int j = 1;
+        if (heap[1].key > heap[2].key)
+        {
+            j = 2;
+        }
+        if (heap[0].key < heap[j].key)
+        {
+            return 0;
+        }
+        else
+        {
+            temp = heap[0];
+            heap[0] = heap[j];
+            heap[j] = temp;
+        }
+        return 0;
+    }
+
+
+    while (j < CurSize)
+    {
+        if (j < CurSize && heap[j].key > heap[j+1].key)
+        {
+            j++;
+        }
+        if (heap[i].key < heap[j].key)
+        {
+            break;
+        }
+        else
+        {
+            temp = heap[i];
+            heap[i] = heap[j];
+            heap[j] = temp;
+            i = j;
+            j = 2*j + 1;
+        }
+    }
+}
+
+int MinHeap::SiftUp(int start)
+{
+    int j = start, i = (j-1)/2;
+    Node temp = heap[j];
+    while (j > 0)
+    {
+        if (heap[i].key < temp.key)
+        {
+            break;
+        }
+        else
+        {
+            temp = heap[j];
+            heap[j] = heap[i];
+            heap[i] = temp;
+            j = i;
+            i = (i-1)/2;
+        }
+    }
+    return 0;
+}
+
+int MinHeap::Insert(int key, int data)
+{
+    if (CurSize == MaxSize)
+    {
+        cout << "堆已满，无法插入\n";
+        return 1;
+    }
+    heap[CurSize].key = key;
+    heap[CurSize].data = data;
+    SiftUp(CurSize);
+    CurSize++;
+    return 0;
+}
+
+MinHeap::MinHeap(int Size)
+{
+    MaxSize = (DefaultSize < Size)? Size : DefaultSize;
+    heap = new Node[MaxSize];
+    CurSize = 0;
+}
+
+
+
+int main()
+{
+    MinHeap td(10);
+    td.Insert(5,5);
+    td.Insert(2,2);
+    td.Insert(3,3);
+    td.Insert(4,4);
+    td.Insert(6,6);
+    td.Insert(1,1);
+    int i;
+    td.RemoveMin();
+    for (i = 0; i < td.CurSize; i++)
+    {
+        cout << td.heap[i].key;
+    }cout << endl;
+}
